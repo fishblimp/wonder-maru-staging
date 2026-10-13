@@ -54,9 +54,11 @@
     scrollMax: 90,
     idleEvery: 10000,
     idleStrength: 70,
-    letterResponse: 0,
-    flurryTime: 900,
-    flurrySpeed: 2,
+    letterResponse: 0.25,
+    flurryOn: 1,
+    flurryTime: 800,
+    flurrySpeed: 1.7,
+    playOnLoad: 1,
   };
 
   /* Circle geometry (SVG units, from the original artwork) */
@@ -194,7 +196,7 @@
     return lin.map(c => { c = Math.min(1, Math.max(0, c)); return Math.round(255 * (c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - 0.055)); });
   }
   function startFlurry() {
-    if (reduceMotion || !(CFG.flurryTime > 0)) return;
+    if (reduceMotion || !CFG.flurryOn || !(CFG.flurryTime > 0)) return;
     const restart = !!flurry;
     if (!restart) baseRGB = parseRGB(getComputedStyle(blob).fill);
     flurry = { t0: performance.now(), hue0: restart ? flurry.hue : Math.random() * 360, hue: 0, skipIn: restart };
@@ -247,6 +249,18 @@
       lastActivity = now;
     }, 500);
   }
+
+  /* Play one wobble (and the color flurry, if on) when the page first loads */
+  function playIntro() {
+    if (!CFG.playOnLoad) return;
+    const at = Math.random() * Math.PI * 2, d = 0.6;
+    const pk = poke(at, 1.1 - 0.55 * d);
+    kick(th => d * pk(th) + (1 - d) * 0.8 * Math.cos(2 * th), CFG.tapStrength);
+    startFlurry();
+    lastActivity = performance.now();
+  }
+  if (document.readyState === 'complete') setTimeout(playIntro, 350);
+  else window.addEventListener('load', () => setTimeout(playIntro, 350), { once: true });
 
   draw();
 })();

@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Logo Tap Diagnostic</title>
+<style>
+    :root { --page-bg: #000000; --blob: #ffffff; --ink: #010101; }
+    html, body { margin: 0; }
+    body { background: var(--page-bg); }
+    #wm-logo { display: block; width: min(80vw, 440px); height: auto; overflow: visible; touch-action: manipulation; -webkit-tap-highlight-color: transparent; cursor: pointer; }
+    #wm-logo .wm-blob { fill: var(--blob); }
+    #wm-logo .wm-text { fill: var(--ink); pointer-events: none; }
+    /* Demo layout: tall page with a pinned logo so scrolling can be tried. Remove when integrating. */
+    .stage { min-height: 300vh; display: flex; justify-content: center; }
+    .sticky { position: sticky; top: 0; height: 100vh; display: grid; place-items: center; }
+    #diag { position: fixed; left: 0; right: 0; bottom: 0; margin: 0; padding: 8px 10px; font: 11px/1.35 ui-monospace, Menlo, monospace; color: #9fe8a0; background: rgba(0,0,0,.78); white-space: pre-wrap; pointer-events: none; z-index: 10; }
+</style>
+</head>
+<body>
+<div class="stage"><div class="sticky">
+<svg id="wm-logo" xmlns="http://www.w3.org/2000/svg" viewBox="126 216 360 360" role="img" aria-label="Wonder Maru">
+          <path id="wm-blob" class="wm-blob" d="M143.28,396a162.72,162.72 0 1,0 325.44,0a162.72,162.72 0 1,0 -325.44,0Z"></path>
+          <g class="wm-text" id="wm-text">
+            <path d="M167.91,339.94h12.43l7.81,29.82c1.18,5.12,2.6,13.1,2.6,13.1h.17s1.51-7.48,2.77-12.77l6.55-30.16h11.76l6.55,30.07c1.26,5.29,2.77,12.85,2.77,12.85h.17s1.76-7.98,2.94-13.19l7.56-29.74h12.01l-17.14,60.06h-11.34l-7.31-32.17c-1.01-4.37-2.1-10.67-2.1-10.67h-.17s-.92,6.3-1.93,10.67l-7.39,32.17h-11.26l-17.47-60.06Z"></path>
+            <path d="M237.46,378.5c0-12.85,9.16-22.76,22.51-22.76s22.51,9.91,22.51,22.76-9.16,22.76-22.51,22.76-22.51-9.91-22.51-22.76ZM270.89,378.5c0-8.4-3.95-14.11-10.92-14.11s-10.92,5.71-10.92,14.11,3.86,14.03,10.92,14.03,10.92-5.63,10.92-14.03Z"></path>
+            <path d="M297.26,362.79h.25c2.94-4.62,6.89-7.06,12.77-7.06,8.9,0,14.87,6.72,14.87,16.13v28.14h-11.42v-26.46c0-4.62-2.69-7.9-7.48-7.9-5.04,0-8.74,4.03-8.74,9.91v24.44h-11.42v-43.09h11.17v5.88Z"></path>
+            <path d="M328.43,378.5c0-13.44,7.64-22.76,18.4-22.76,6.05,0,9.83,2.77,12.18,6.38h.25v-22.18h11.42v60.06h-11v-5.63h-.17c-2.52,4.12-6.8,6.89-12.85,6.89-10.84,0-18.23-8.82-18.23-22.76ZM359.51,378.75c0-8.23-2.69-13.78-10-13.78-6.3,0-9.49,5.54-9.49,13.52s3.28,13.19,9.16,13.19c6.8,0,10.33-5.04,10.33-12.94Z"></path>
+            <path d="M373.45,378.41c0-12.77,8.65-22.68,21.25-22.68,13.86,0,21.25,10.58,21.25,25.96h-31.25c.84,6.64,4.54,10.75,11,10.75,4.45,0,7.06-2.02,8.32-5.29h11.26c-1.6,7.64-8.4,14.11-19.49,14.11-14.28,0-22.34-10-22.34-22.85ZM384.87,373.79h19.15c-.34-5.46-3.95-9.24-9.16-9.24-6.05,0-8.99,3.61-10,9.24Z"></path>
+            <path d="M429.73,363.8h.25c2.6-4.87,5.54-7.39,10.58-7.39,1.26,0,2.02.08,2.69.34v10h-.25c-7.48-.76-12.85,3.19-12.85,12.26v21h-11.42v-43.09h11v6.89Z"></path>
+            <path d="M225.53,406.94h17.14l8.48,30.16c2.1,7.56,3.78,16.21,3.78,16.21h.17s1.6-8.65,3.7-16.21l8.48-30.16h17.39v60.06h-11.34v-34.44c0-4.87.5-12.43.5-12.43h-.17s-1.34,7.06-2.6,11.42l-10.33,35.45h-11.68l-10.08-35.45c-1.26-4.37-2.6-11.42-2.6-11.42h-.17s.5,7.56.5,12.43v34.44h-11.17v-60.06Z"></path>
+            <path d="M316.25,462.21h-.17c-2.18,3.28-5.29,5.8-12.68,5.8-8.82,0-15.04-4.62-15.04-13.19,0-9.49,7.73-12.52,17.3-13.86,7.14-1.01,10.42-1.6,10.42-4.87,0-3.11-2.44-5.12-7.22-5.12-5.38,0-7.98,1.93-8.32,6.05h-10.16c.34-7.56,5.96-14.2,18.56-14.2s18.14,5.8,18.14,15.88v21.92c0,3.28.5,5.21,1.51,5.96v.42h-11c-.67-.84-1.09-2.86-1.34-4.79ZM316.33,451.8v-6.47c-2.02,1.18-5.12,1.85-7.98,2.52-5.96,1.34-8.9,2.69-8.9,6.72s2.69,5.46,6.72,5.46c6.55,0,10.16-4.03,10.16-8.23Z"></path>
+            <path d="M342.79,430.8h.25c2.6-4.87,5.54-7.39,10.58-7.39,1.26,0,2.02.08,2.69.34v10h-.25c-7.48-.76-12.85,3.19-12.85,12.26v21h-11.42v-43.09h11v6.89Z"></path>
+            <path d="M387.98,467v-5.04h-.25c-2.94,3.95-6.3,6.22-12.35,6.22-9.58,0-14.95-6.13-14.95-15.54v-28.73h11.34v26.8c0,5.04,2.27,7.81,7.14,7.81,5.38,0,8.65-4.03,8.65-9.74v-24.86h11.42v43.09h-11Z"></path>
+          </g>
+        </svg>
+</div></div>
+<pre id="diag">JS did not start</pre>
+<script>window.addEventListener('error', function (e) { var p = document.getElementById('diag'); if (p) p.textContent += '\nERR: ' + e.message + ' @line ' + e.lineno; });</script>
+<script>
+/* Wonder Maru - gelatin blob. The circle is a ring of spring-linked points; the lettering is a
+   separate group that only moves if letterResponse is above 0. */
+(() => {
+  const svg  = document.getElementById('wm-logo');
+  const blob = document.getElementById('wm-blob');
+  if (!svg || !blob) return;
+
+  /* ---- Tuning knobs ---- */
+  const CFG = {
+    stiffness: 90,
+    coupling: 300,
+    damping: 3.4,
+    volume: 60,
+    maxOffset: 0.22,
+    tapStrength: 150,
+    scrollGain: 0.8,
+    scrollMax: 90,
+    idleEvery: 10000,
+    idleStrength: 70,
+    letterResponse: 0,
+  };
+
+  /* Circle geometry (SVG units, from the original artwork) */
+  const CX = 306, CY = 396, R = 162.72, N = 28;
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const amp = reduceMotion ? 0.35 : 1;
+
+  const ang = Array.from({ length: N }, (_, i) => (i / N) * Math.PI * 2);
+  const x = new Float32Array(N);   // radial offset of each point
+  const v = new Float32Array(N);   // radial velocity
+  const a = new Float32Array(N);   // scratch: acceleration
+
+  function pointAt(i) {
+    const k = (i + N) % N;
+    const r = R + x[k];
+    return [CX + Math.cos(ang[k]) * r, CY + Math.sin(ang[k]) * r];
+  }
+  function draw() {
+    let d = '';
+    for (let i = 0; i < N; i++) {
+      const p0 = pointAt(i - 1), p1 = pointAt(i), p2 = pointAt(i + 1), p3 = pointAt(i + 2);
+      if (i === 0) d += `M${p1[0].toFixed(2)},${p1[1].toFixed(2)}`;
+      const c1x = p1[0] + (p2[0] - p0[0]) / 6, c1y = p1[1] + (p2[1] - p0[1]) / 6;
+      const c2x = p2[0] - (p3[0] - p1[0]) / 6, c2y = p2[1] - (p3[1] - p1[1]) / 6;
+      d += `C${c1x.toFixed(2)},${c1y.toFixed(2)} ${c2x.toFixed(2)},${c2y.toFixed(2)} ${p2[0].toFixed(2)},${p2[1].toFixed(2)}`;
+    }
+    blob.setAttribute('d', d + 'Z');
+    applyLetters();
+  }
+
+  /* Lettering follows the blob's two lowest wobble modes, scaled by CFG.letterResponse:
+     mode 1 = the blob's centre drifting, mode 2 = the blob going oval. At 0 the letters never move. */
+  const letters = document.getElementById('wm-text');
+  function applyLetters() {
+    if (!letters) return;
+    const k = CFG.letterResponse;
+    if (!k) { letters.removeAttribute('transform'); return; }
+    let sx = 0, sy = 0, ec = 0, es = 0;
+    for (let i = 0; i < N; i++) {
+      const t = ang[i];
+      sx += x[i] * Math.cos(t);     sy += x[i] * Math.sin(t);
+      ec += x[i] * Math.cos(2 * t); es += x[i] * Math.sin(2 * t);
+    }
+    const s = 2 / N;
+    sx *= s; sy *= s; ec *= s; es *= s;
+    const m11 = 1 + k * ec / R, m12 = k * es / R, m22 = 1 - k * ec / R;
+    const e = CX + k * sx - m11 * CX - m12 * CY;
+    const f = CY + k * sy - m12 * CX - m22 * CY;
+    letters.setAttribute('transform', `matrix(${m11} ${m12} ${m12} ${m22} ${e} ${f})`);
+  }
+
+  /* Physics (fixed timestep for stability) */
+  const H = 1 / 120;
+  function step() {
+    const limit = R * CFG.maxOffset;
+    let mean = 0;
+    for (let i = 0; i < N; i++) mean += x[i];
+    mean /= N;
+    for (let i = 0; i < N; i++) {
+      const l = x[(i - 1 + N) % N], r = x[(i + 1) % N];
+      a[i] = -CFG.stiffness * x[i] - CFG.damping * v[i] + CFG.coupling * (l + r - 2 * x[i]) - CFG.volume * mean;
+    }
+    for (let i = 0; i < N; i++) {
+      v[i] += a[i] * H;
+      x[i] += v[i] * H;
+      if (x[i] >  limit) { x[i] =  limit; v[i] *= 0.5; }
+      if (x[i] < -limit) { x[i] = -limit; v[i] *= 0.5; }
+    }
+  }
+
+  /* Animation loop: runs only while the blob is moving */
+  let running = false, last = 0, acc = 0;
+  function frame(t) {
+    acc += Math.min((t - last) / 1000, 0.05);
+    last = t;
+    while (acc >= H) { step(); acc -= H; }
+    let moving = false;
+    for (let i = 0; i < N; i++) {
+      if (Math.abs(x[i]) > 0.01 || Math.abs(v[i]) > 0.05) { moving = true; break; }
+    }
+    if (moving) { draw(); requestAnimationFrame(frame); }
+    else { x.fill(0); v.fill(0); draw(); running = false; }
+  }
+  function wake() {
+    if (running) return;
+    running = true; last = performance.now(); acc = 0;
+    requestAnimationFrame(frame);
+  }
+
+  /* Kicks. The average is removed so the blob keeps its volume: pushing one side in makes the
+     other sides bulge, like jelly. */
+  let lastActivity = performance.now();
+  function kick(fn, scale) {
+    const tmp = new Float32Array(N);
+    let mean = 0;
+    for (let i = 0; i < N; i++) { tmp[i] = fn(ang[i]); mean += tmp[i]; }
+    mean /= N;
+    for (let i = 0; i < N; i++) v[i] += (tmp[i] - mean) * scale * amp;
+    wake();
+  }
+  const wrap = d => Math.atan2(Math.sin(d), Math.cos(d));
+  const poke = (at, sigma) => th => -Math.exp(-(wrap(th - at) ** 2) / (2 * sigma * sigma));
+
+  /* Tap / click. Pointer events cover mouse, pen and touch. touchstart is a fallback for
+     webviews (some iOS ones) that skip pointer events; the timestamp check stops a double kick. */
+  let lastPointer = -1000;
+  function tapFrom(cx, cy) {
+    const box = svg.getBoundingClientRect();
+    const scale = 360 / Math.min(box.width, box.height);   // the viewBox is 360 units square
+    const dx = (cx - (box.left + box.width / 2)) * scale;
+    const dy = (cy - (box.top + box.height / 2)) * scale;
+    const dist = Math.hypot(dx, dy);
+    if (dist > R * 1.3) return;
+    const d = Math.min(dist / R, 1);      // 0 = centre, 1 = edge
+    const at = Math.atan2(dy, dx);
+    const pk = poke(at, 1.1 - 0.55 * d);
+    kick(th => d * pk(th) + (1 - d) * 0.8 * Math.cos(2 * th), CFG.tapStrength);
+    lastActivity = performance.now();
+  }
+  svg.addEventListener('pointerdown', e => { lastPointer = e.timeStamp; tapFrom(e.clientX, e.clientY); });
+  svg.addEventListener('touchstart', e => {
+    if (e.timeStamp - lastPointer < 500) return;
+    const t = e.changedTouches[0];
+    if (t) tapFrom(t.clientX, t.clientY);
+  }, { passive: true });
+
+  /* Scroll */
+  let lastY = window.scrollY;
+  if (!reduceMotion) {
+    window.addEventListener('scroll', () => {
+      const dy = window.scrollY - lastY;
+      lastY = window.scrollY;
+      if (!dy) return;
+      const s = Math.min(Math.abs(dy) * CFG.scrollGain, CFG.scrollMax);
+      const dir = Math.sign(dy);
+      kick(th => -Math.cos(2 * th) + dir * 0.6 * Math.sin(th), s);
+      lastActivity = performance.now();
+    }, { passive: true });
+  }
+
+  /* Idle nudge: one small disturbance after a stretch of calm */
+  if (!reduceMotion) {
+    setInterval(() => {
+      if (document.hidden) return;
+      const now = performance.now();
+      if (now - lastActivity < CFG.idleEvery) return;
+      kick(poke(Math.random() * Math.PI * 2, 0.6), CFG.idleStrength);
+      lastActivity = now;
+    }, 500);
+  }
+
+  /* ---- Diagnostics: on-screen log for debugging touch on phones ---- */
+  const diag = document.getElementById('diag');
+  const lines = [];
+  let status = '';
+  const render = () => { diag.textContent = status + '\n' + lines.join('\n'); };
+  const log = msg => { lines.push(msg); if (lines.length > 9) lines.shift(); render(); };
+  let frames = 0, peak = 0, lastScrollLog = 0;
+  (function tick() { frames++; if (frames < 600) requestAnimationFrame(tick); })();
+  setInterval(() => { for (let i = 0; i < N; i++) peak = Math.max(peak, Math.abs(x[i])); }, 50);
+  setInterval(() => {
+    const b = svg.getBoundingClientRect();
+    status = 'JS ok | reduce-motion: ' + reduceMotion + ' | frames: ' + frames + ' | peak: ' + peak.toFixed(1) +
+             '\nsvg ' + Math.round(b.width) + 'x' + Math.round(b.height) + ' at ' + Math.round(b.left) + ',' + Math.round(b.top) +
+             ' | win ' + innerWidth + 'x' + innerHeight;
+    render();
+  }, 300);
+  ['pointerdown', 'pointerup', 'touchstart', 'touchend', 'click'].forEach(type => {
+    document.addEventListener(type, e => {
+      const p = e.changedTouches ? e.changedTouches[0] : e;
+      const t = e.target;
+      log(type + ' ' + Math.round(p.clientX) + ',' + Math.round(p.clientY) + ' on ' + (t.id || t.tagName));
+    }, true);
+  });
+  svg.addEventListener('pointerdown', e => {
+    const b = svg.getBoundingClientRect();
+    const sc = 360 / Math.min(b.width, b.height);
+    const d = Math.hypot((e.clientX - (b.left + b.width / 2)) * sc, (e.clientY - (b.top + b.height / 2)) * sc);
+    log('  dist ' + d.toFixed(0) + ' / R ' + R + (d > R * 1.3 ? ' MISS' : ' hit'));
+  });
+  window.addEventListener('scroll', () => {
+    const now = performance.now();
+    if (now - lastScrollLog > 400) { lastScrollLog = now; log('scroll y=' + Math.round(window.scrollY)); }
+  }, { passive: true });
+
+  draw();
+})();
+</script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Logo Tap Diagnostic</title>
+<title>Wonder Maru</title>
 <style>
     :root { --page-bg: #000000; --blob: #ffffff; --ink: #010101; }
     html, body { margin: 0; }
@@ -14,7 +14,6 @@
     /* Demo layout: tall page with a pinned logo so scrolling can be tried. Remove when integrating. */
     .stage { min-height: 300vh; display: flex; justify-content: center; }
     .sticky { position: sticky; top: 0; height: 100vh; display: grid; place-items: center; }
-    #diag { position: fixed; left: 0; right: 0; bottom: 0; margin: 0; padding: 8px 10px; font: 11px/1.35 ui-monospace, Menlo, monospace; color: #9fe8a0; background: rgba(0,0,0,.78); white-space: pre-wrap; pointer-events: none; z-index: 10; }
 </style>
 </head>
 <body>
@@ -35,8 +34,6 @@
           </g>
         </svg>
 </div></div>
-<pre id="diag">JS did not start</pre>
-<script>window.addEventListener('error', function (e) { var p = document.getElementById('diag'); if (p) p.textContent += '\nERR: ' + e.message + ' @line ' + e.lineno; });</script>
 <script>
 /* Wonder Maru - gelatin blob. The circle is a ring of spring-linked points; the lettering is a
    separate group that only moves if letterResponse is above 0. */
@@ -55,9 +52,9 @@
     tapStrength: 150,
     scrollGain: 0.8,
     scrollMax: 90,
-    idleEvery: 10000,
+    idleEvery: 6000,
     idleStrength: 70,
-    letterResponse: 0,
+    letterResponse: 0.2,
   };
 
   /* Circle geometry (SVG units, from the original artwork) */
@@ -209,40 +206,6 @@
       lastActivity = now;
     }, 500);
   }
-
-  /* ---- Diagnostics: on-screen log for debugging touch on phones ---- */
-  const diag = document.getElementById('diag');
-  const lines = [];
-  let status = '';
-  const render = () => { diag.textContent = status + '\n' + lines.join('\n'); };
-  const log = msg => { lines.push(msg); if (lines.length > 9) lines.shift(); render(); };
-  let frames = 0, peak = 0, lastScrollLog = 0;
-  (function tick() { frames++; if (frames < 600) requestAnimationFrame(tick); })();
-  setInterval(() => { for (let i = 0; i < N; i++) peak = Math.max(peak, Math.abs(x[i])); }, 50);
-  setInterval(() => {
-    const b = svg.getBoundingClientRect();
-    status = 'JS ok | reduce-motion: ' + reduceMotion + ' | frames: ' + frames + ' | peak: ' + peak.toFixed(1) +
-             '\nsvg ' + Math.round(b.width) + 'x' + Math.round(b.height) + ' at ' + Math.round(b.left) + ',' + Math.round(b.top) +
-             ' | win ' + innerWidth + 'x' + innerHeight;
-    render();
-  }, 300);
-  ['pointerdown', 'pointerup', 'touchstart', 'touchend', 'click'].forEach(type => {
-    document.addEventListener(type, e => {
-      const p = e.changedTouches ? e.changedTouches[0] : e;
-      const t = e.target;
-      log(type + ' ' + Math.round(p.clientX) + ',' + Math.round(p.clientY) + ' on ' + (t.id || t.tagName));
-    }, true);
-  });
-  svg.addEventListener('pointerdown', e => {
-    const b = svg.getBoundingClientRect();
-    const sc = 360 / Math.min(b.width, b.height);
-    const d = Math.hypot((e.clientX - (b.left + b.width / 2)) * sc, (e.clientY - (b.top + b.height / 2)) * sc);
-    log('  dist ' + d.toFixed(0) + ' / R ' + R + (d > R * 1.3 ? ' MISS' : ' hit'));
-  });
-  window.addEventListener('scroll', () => {
-    const now = performance.now();
-    if (now - lastScrollLog > 400) { lastScrollLog = now; log('scroll y=' + Math.round(window.scrollY)); }
-  }, { passive: true });
 
   draw();
 })();
